@@ -38,8 +38,20 @@
       <HintPath>..\exe\Revenj.Api.Interface.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Revenj.DatabasePersistence.Interface">
+      <HintPath>..\exe\Revenj.DatabasePersistence.Interface.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Revenj.DatabasePersistence.Postgres">
+      <HintPath>..\exe\Revenj.DatabasePersistence.Postgres.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Revenj.DomainPatterns.Interface">
       <HintPath>..\exe\Revenj.DomainPatterns.Interface.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Revenj.Extensibility">
+      <HintPath>..\exe\Revenj.Extensibility.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Revenj.Extensibility.Interface">
@@ -67,12 +79,16 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.ServiceModel.Web" />
     <Reference Include="System.Web" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ContainerConfiguration.cs" />
+    <Compile Include="Context.cs" />
     <Compile Include="Fortunes.generated.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
