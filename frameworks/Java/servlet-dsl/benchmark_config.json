@@ -1,0 +1,44 @@
+{
+  "framework": "servlet-dsl",
+  "tests": [{
+    "default": {
+      "setup_file": "setup",
+      "json_url": "/servlet-dsl/json",
+      "plaintext_url": "/servlet-dsl/plaintext",
+      "port": 8080,
+      "approach": "Realistic",
+      "classification": "Platform",
+      "database": "None",
+      "framework": "servlet",
+      "language": "Java",
+      "orm": "Raw",
+      "platform": "Servlet",
+      "webserver": "Resin",
+      "os": "Linux",
+      "database_os": "Linux",
+      "display_name": "servlet",
+      "notes": "",
+      "versus": "servlet"
+    },
+    "pg-raw": {
+      "setup_file": "setup",
+      "db_url": "/servlet-dsl/db",
+      "query_url": "/servlet-dsl/queries?queries=",
+      "update_url": "/servlet-dsl/updates?queries=",
+      "port": 8080,
+      "approach": "Realistic",
+      "classification": "Platform",
+      "database": "Postgres",
+      "framework": "servlet",
+      "language": "Java",
+      "orm": "Raw",
+      "platform": "Servlet",
+      "webserver": "Resin",
+      "os": "Linux",
+      "database_os": "Linux",
+      "display_name": "servlet",
+      "notes": "",
+      "versus": "servlet"
+    }
+  }]
+}

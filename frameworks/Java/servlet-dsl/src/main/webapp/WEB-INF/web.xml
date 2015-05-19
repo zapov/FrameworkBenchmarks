@@ -1,0 +1,51 @@
+<web-app>
+	<servlet>
+		<servlet-name>db</servlet-name>
+		<servlet-class>dsl.DbServlet</servlet-class>
+		<load-on-startup>0</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>db</servlet-name>
+		<url-pattern>/db</url-pattern>
+	</servlet-mapping>
+	<servlet>
+		<servlet-name>queries</servlet-name>
+		<servlet-class>dsl.QueriesServlet</servlet-class>
+		<load-on-startup>0</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>queries</servlet-name>
+		<url-pattern>/queries</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>json</servlet-name>
+		<servlet-class>dsl.JsonServlet</servlet-class>
+		<load-on-startup>2</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>json</servlet-name>
+		<url-pattern>/json</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>plaintext</servlet-name>
+		<servlet-class>dsl.PlaintextServlet</servlet-class>
+		<load-on-startup>2</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>plaintext</servlet-name>
+		<url-pattern>/plaintext</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>updates</servlet-name>
+		<servlet-class>dsl.UpdateServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>updates</servlet-name>
+		<url-pattern>/updates</url-pattern>
+	</servlet-mapping>
+
+</web-app>
