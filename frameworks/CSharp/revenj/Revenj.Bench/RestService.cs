@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Configuration;
 using System.IO;
@@ -17,7 +16,7 @@ namespace Revenj.Bench
 	public interface IRestService
 	{
 		[OperationContract]
-		[WebGet(UriTemplate = "/text")]
+		[WebGet(UriTemplate = "/plaintext")]
 		[Description("Plain text response")]
 		Stream PlainText();
 
@@ -35,11 +34,6 @@ namespace Revenj.Bench
 		[WebGet(UriTemplate = "/queries/{count}")]
 		[Description("Multiple database queries")]
 		Stream MultipleQueries(string count);
-
-		[OperationContract]
-		[WebGet(UriTemplate = "/fortunes")]
-		[Description("Server side templates")]
-		Stream Fortunes();
 
 		[OperationContract]
 		[WebGet(UriTemplate = "/updates?queries={queries}")]
@@ -123,9 +117,9 @@ namespace Revenj.Bench
 
 		public Stream SingleQuery()
 		{
-			var rnd = ThreadLocal.Random.Next(10000) + 1;
+			var id = ThreadLocal.Random.Next(10000) + 1;
 			var com = ThreadLocal.Command;
-			var world = com.ExecuteSingle(rnd);
+			var world = new World { id = id, randomNumber = com.FindRandomNumber(id) };
 			return ReturnJSON(world);
 		}
 
@@ -136,30 +130,16 @@ namespace Revenj.Bench
 			if (repeat < 1) repeat = 1;
 			else if (repeat > 500) repeat = 500;
 			var com = ThreadLocal.Command;
-			var worlds = com.ExecuteMany(repeat, ThreadLocal.Random);
-			return ReturnJSON(worlds);
-		}
-
-		private static FortuneComparer StaticFortuneComparer = new FortuneComparer();
-		class FortuneComparer : IComparer<Fortune>
-		{
-			public int Compare(Fortune x, Fortune y)
+			var rnd = ThreadLocal.Random;
+			//let's not use the correct way to solve such problems, but instead "punish" the driver
+			//var worlds = com.ExecuteMany(repeat, rnd);
+			var worlds = new World[repeat];
+			for (int i = 0; i < worlds.Length; i++)
 			{
-				return x.message.CompareTo(y.message);
+				var id = rnd.Next(10000) + 1;
+				worlds[i] = new World { id = id, randomNumber = com.FindRandomNumber(id) };
 			}
-		}
-
-		public Stream Fortunes()
-		{
-			var com = ThreadLocal.Command;
-			var fortunes = com.GetFortunes();
-			fortunes.Add(new Fortune { id = 0, message = "Additional fortune added at request time." });
-			fortunes.Sort(StaticFortuneComparer);
-
-			var template = new ASP._Fortunes_cshtml { Model = fortunes };
-			var text = template.TransformText();
-			ThreadContext.Response.ContentType = "text/html; charset=\"utf-8\"";
-			return new MemoryStream(Encoding.UTF8.GetBytes(text));
+			return ReturnJSON(worlds);
 		}
 
 		public Stream Updates(string count)
@@ -170,9 +150,17 @@ namespace Revenj.Bench
 			else if (repeat > 500) repeat = 500;
 			var com = ThreadLocal.Command;
 			var rnd = ThreadLocal.Random;
-			var worlds = com.ExecuteMany(repeat, rnd);
+			//let's not use the correct way to solve such problems, but instead "punish" the driver
+			//var worlds = com.ExecuteMany(repeat, rnd);
+			var worlds = new World[repeat];
 			for (int i = 0; i < worlds.Length; i++)
+			{
+				var id = rnd.Next(10000) + 1;
+				//let's find the random number
+				worlds[i] = new World { id = id, randomNumber = com.FindRandomNumber(id) };
+				//so that we don't use it :D
 				worlds[i].randomNumber = rnd.Next(10000) + 1;
+			}
 			com.Update(worlds);
 			return ReturnJSON(worlds);
 		}

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Text;
 using FrameworkBench;
 using Revenj.DatabasePersistence.Postgres.Converters;
 using Revenj.DatabasePersistence.Postgres.Npgsql;
@@ -18,7 +16,7 @@ namespace Revenj.Bench
 		private readonly ChunkedMemoryStream Stream;
 		private readonly char[] CharBuffer = new char[11];
 		private readonly byte[] ByteBuffer = new byte[11];
-		private readonly bool[] PreparedQueries = new bool[500];
+		//private readonly bool[] PreparedQueries = new bool[500];
 
 		public DAL(string connectionString)
 		{
@@ -30,8 +28,6 @@ namespace Revenj.Bench
 			var com = new NpgsqlCommand("PREPARE w AS SELECT randomNumber FROM World WHERE id=$1", Connection);
 			com.ExecuteNonQuery();
 			com = new NpgsqlCommand("PREPARE u AS UPDATE World as w SET randomNumber = s.randomNumber FROM unnest($1::World[]) s WHERE w.id = s.id", Connection);
-			com.ExecuteNonQuery();
-			com = new NpgsqlCommand("PREPARE f AS SELECT f FROM Fortune f", Connection);
 			com.ExecuteNonQuery();
 		}
 
@@ -45,13 +41,34 @@ namespace Revenj.Bench
 			cms.Write(bb, bb.Length - len, len);
 		}
 
-		private void WriteString(ChunkedMemoryStream cms, string value)
+		private void WriteAsciiString(ChunkedMemoryStream cms, string value)
 		{
 			for (int i = 0; i < value.Length; i++)
 				cms.WriteByte((byte)value[i]);
 		}
 
-		private void CheckQuery(int repeat)
+		private ChunkedMemoryStream PrepareExecute(string name)
+		{
+			var cms = Stream;
+			cms.Position = 0;
+			cms.Write(ExecuteCommand, 0, ExecuteCommand.Length);
+			WriteAsciiString(cms, name);
+			cms.WriteByte((byte)'(');
+			return cms;
+		}
+
+		public int FindRandomNumber(int id)
+		{
+			var cms = PrepareExecute("w");
+			WriteInt(cms, id);
+			cms.WriteByte((byte)')');
+			cms.SetLength(cms.Position);
+			return (int)Command.ExecuteScalar();
+		}
+
+		//it seems it's against the spirit of the bench to use database features
+		//to solve problems in an efficient way if such features don't work across databases/frameworks
+		/*private void CheckQuery(int repeat)
 		{
 			if (PreparedQueries[repeat - 1])
 				return;
@@ -61,26 +78,6 @@ namespace Revenj.Bench
 			var com = new NpgsqlCommand("PREPARE q" + repeat + " AS SELECT ROW(" + string.Join(",", subqueries) + ")", Connection);
 			com.ExecuteNonQuery();
 			PreparedQueries[repeat - 1] = true;
-		}
-
-		private ChunkedMemoryStream PrepareExecute(string name)
-		{
-			var cms = Stream;
-			cms.Position = 0;
-			cms.Write(ExecuteCommand, 0, ExecuteCommand.Length);
-			WriteString(cms, name);
-			cms.WriteByte((byte)'(');
-			return cms;
-		}
-
-		public World ExecuteSingle(int id)
-		{
-			var cms = PrepareExecute("w");
-			WriteInt(cms, id);
-			cms.WriteByte((byte)')');
-			cms.SetLength(cms.Position);
-			var rnd = (int)Command.ExecuteScalar();
-			return new World { id = id, randomNumber = rnd };
 		}
 
 		public World[] ExecuteMany(int repeat, Random random)
@@ -109,33 +106,12 @@ namespace Revenj.Bench
 				reader.Read();
 			}
 			return result;
-		}
-
-		public List<Fortune> GetFortunes()
-		{
-			var cms = PrepareExecute("f");
-			cms.WriteByte((byte)')');
-			cms.SetLength(cms.Position);
-			var fortunes = new List<Fortune>(14);
-			var dr = Command.ExecuteReader();
-			while (dr.Read())
-			{
-				var reader = cms.UseBufferedReader(dr.GetString(0));
-				reader.Read();
-				var fortune = new Fortune { id = IntConverter.Parse(reader) };
-				reader.Read();
-				fortune.message = StringConverter.Parse(reader, 0);
-				fortunes.Add(fortune);
-			}
-			dr.Close();
-			return fortunes;
-		}
-
+		}*/
 
 		public void Update(World[] worlds)
 		{
 			var cms = PrepareExecute("u");
-			WriteString(cms, "ARRAY[(");
+			WriteAsciiString(cms, "ARRAY[(");
 			var w = worlds[0];
 			WriteInt(cms, w.id);
 			cms.WriteByte((byte)',');
@@ -143,12 +119,12 @@ namespace Revenj.Bench
 			for (int i = 1; i < worlds.Length; i++)
 			{
 				w = worlds[i];
-				WriteString(cms, "),(");
+				WriteAsciiString(cms, "),(");
 				WriteInt(cms, w.id);
 				cms.WriteByte((byte)',');
 				WriteInt(cms, w.randomNumber);
 			}
-			WriteString(cms, ")]::World[])");
+			WriteAsciiString(cms, ")]::World[])");
 			cms.SetLength(cms.Position);
 			Command.ExecuteNonQuery();
 		}

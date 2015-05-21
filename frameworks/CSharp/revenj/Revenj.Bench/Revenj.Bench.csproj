@@ -31,9 +31,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="RazorGenerator.Templating">
-      <HintPath>..\packages\RazorGenerator.Templating.2.3.3\lib\portable-net40+sl50+win+wpa81+wp80\RazorGenerator.Templating.dll</HintPath>
-    </Reference>
     <Reference Include="Revenj.Api.Interface">
       <HintPath>..\exe\Revenj.Api.Interface.dll</HintPath>
       <Private>False</Private>
@@ -89,21 +86,11 @@
   <ItemGroup>
     <Compile Include="ContainerConfiguration.cs" />
     <Compile Include="DAL.cs" />
-    <Compile Include="Fortunes.generated.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Fortunes.cshtml</DependentUpon>
-    </Compile>
     <Compile Include="RestService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Fortunes.cshtml">
-      <Generator>RazorGenerator</Generator>
-      <LastGenOutput>Fortunes.generated.cs</LastGenOutput>
-    </None>
     <None Include="model.dsl" />
-    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
