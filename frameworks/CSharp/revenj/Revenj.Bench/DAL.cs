@@ -16,7 +16,6 @@ namespace Revenj.Bench
 		private readonly ChunkedMemoryStream Stream;
 		private readonly char[] CharBuffer = new char[11];
 		private readonly byte[] ByteBuffer = new byte[11];
-		//private readonly bool[] PreparedQueries = new bool[500];
 
 		public DAL(string connectionString)
 		{
@@ -65,48 +64,6 @@ namespace Revenj.Bench
 			cms.SetLength(cms.Position);
 			return (int)Command.ExecuteScalar();
 		}
-
-		//it seems it's against the spirit of the bench to use database features
-		//to solve problems in an efficient way if such features don't work across databases/frameworks
-		/*private void CheckQuery(int repeat)
-		{
-			if (PreparedQueries[repeat - 1])
-				return;
-			var subqueries = new List<string>(repeat);
-			for (int j = 0; j < repeat; j++)
-				subqueries.Add("(SELECT randomNumber FROM World WHERE id=$" + (j + 1) + ")");
-			var com = new NpgsqlCommand("PREPARE q" + repeat + " AS SELECT ROW(" + string.Join(",", subqueries) + ")", Connection);
-			com.ExecuteNonQuery();
-			PreparedQueries[repeat - 1] = true;
-		}
-
-		public World[] ExecuteMany(int repeat, Random random)
-		{
-			var result = new World[repeat];
-			CheckQuery(repeat);
-			var cms = PrepareExecute("q" + repeat);
-			int id = random.Next(10000) + 1;
-			WriteInt(cms, id);
-			result[0] = new World { id = id };
-			for (int i = 1; i < result.Length; i++)
-			{
-				cms.WriteByte((byte)',');
-				id = random.Next(10000) + 1;
-				WriteInt(cms, id);
-				result[i] = new World { id = id };
-			}
-			cms.WriteByte((byte)')');
-			cms.SetLength(cms.Position);
-			var record = (string)Command.ExecuteScalar();
-			var reader = cms.UseBufferedReader(record);
-			reader.Read();
-			for (int i = 0; i < result.Length; i++)
-			{
-				result[i].randomNumber = IntConverter.Parse(reader);
-				reader.Read();
-			}
-			return result;
-		}*/
 
 		public void Update(World[] worlds)
 		{

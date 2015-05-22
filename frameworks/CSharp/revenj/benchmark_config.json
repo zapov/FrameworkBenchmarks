@@ -1,0 +1,49 @@
+{
+  "framework": "Revenj",
+  "tests": [{
+    "default": {
+      "setup_file": "setup",
+      "json_url": "/Bench.svc/json",
+      "db_url": "/Bench.svc/db",
+      "query_url": "/Bench.svc/queries/",
+      "plaintext_url": "/Bench.svc/plaintext",
+      "update_url": "/Bench.svc/updates?queries=",
+      "port": 8080,
+      "approach": "Realistic",
+      "classification": "Platform",
+      "database": "Postgres",
+      "database_os": "Linux",
+      "framework": "Revenj",
+      "language": "C#",
+      "orm": "Raw",
+      "platform": ".NET",
+      "webserver": "HTTP.sys",
+      "os": "Windows",
+      "display_name": "Revenj",
+      "notes": "",
+      "versus": "HttpListener"
+    },
+    "xsp": {
+      "setup_file": "setup",
+      "json_url": "/Bench.svc/json",
+      "db_url": "/Bench.svc/db",
+      "query_url": "/Bench.svc/queries/",
+      "plaintext_url": "/Bench.svc/plaintext",
+      "update_url": "/Bench.svc/updates?queries=",
+      "port": 8080,
+      "approach": "Realistic",
+      "classification": "Platform",
+      "database": "Postgres",
+      "database_os": "Linux",
+      "framework": "Revenj",
+      "language": "C#",
+      "orm": "Raw",
+      "platform": "Mono",
+      "webserver": "XSP",
+      "os": "Linux",
+      "display_name": "Revenj",
+      "notes": "",
+      "versus": "HttpListener"
+    }
+  }]
+}

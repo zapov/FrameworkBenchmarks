@@ -1,6 +1,4 @@
-﻿using System;
-using System.ComponentModel;
-using System.Configuration;
+﻿using System.ComponentModel;
 using System.IO;
 using System.ServiceModel;
 using System.ServiceModel.Web;
@@ -8,7 +6,6 @@ using System.Text;
 using FrameworkBench;
 using Revenj.Api;
 using Revenj.Serialization;
-using Revenj.Utility;
 
 namespace Revenj.Bench
 {
@@ -41,45 +38,6 @@ namespace Revenj.Bench
 		Stream Updates(string queries);
 	}
 
-	internal static class ThreadLocal
-	{
-		[ThreadStatic]
-		private static ChunkedMemoryStream ThreadStream;
-		internal static ChunkedMemoryStream Stream
-		{
-			get
-			{
-				if (ThreadStream == null)
-					ThreadStream = new ChunkedMemoryStream();
-				ThreadStream.Position = 0;
-				return ThreadStream;
-			}
-		}
-		[ThreadStatic]
-		private static Random ThreadRandom;
-		internal static Random Random
-		{
-			get
-			{
-				if (ThreadRandom == null)
-					ThreadRandom = new Random(0);
-				return ThreadRandom;
-			}
-		}
-		private static readonly string ConnectionString = ConfigurationManager.AppSettings["ConnectionString"];
-		[ThreadStatic]
-		private static DAL ThreadCommand;
-		internal static DAL Command
-		{
-			get
-			{
-				if (ThreadCommand == null)
-					ThreadCommand = new DAL(ConnectionString);
-				return ThreadCommand;
-			}
-		}
-	}
-
 	public class RestService : IRestService
 	{
 		private static byte[] HelloWorld = Encoding.ASCII.GetBytes("Hello, World!");
@@ -95,6 +53,7 @@ namespace Revenj.Bench
 		{
 			var cms = ThreadLocal.Stream;
 			cms.Write(HelloWorld, 0, HelloWorld.Length);
+			cms.SetLength(cms.Position);
 			cms.Position = 0;
 			ThreadContext.Response.ContentType = "text/plain";
 			return cms;
@@ -105,6 +64,7 @@ namespace Revenj.Bench
 			var cms = ThreadLocal.Stream;
 			//using baked in serialization since DSL is compiled with manual-json
 			Json.Serialize(value, cms, false);
+			cms.SetLength(cms.Position);
 			cms.Position = 0;
 			ThreadContext.Response.ContentType = "application/json";
 			return cms;
@@ -123,6 +83,9 @@ namespace Revenj.Bench
 			return ReturnJSON(world);
 		}
 
+		//it seems it's against the spirit of the bench to use database features
+		//to solve problems in an efficient way if such features don't work across databases/frameworks
+		//so let's just loop like everyone else
 		public Stream MultipleQueries(string count)
 		{
 			int repeat;
@@ -131,8 +94,6 @@ namespace Revenj.Bench
 			else if (repeat > 500) repeat = 500;
 			var com = ThreadLocal.Command;
 			var rnd = ThreadLocal.Random;
-			//let's not use the correct way to solve such problems, but instead "punish" the driver
-			//var worlds = com.ExecuteMany(repeat, rnd);
 			var worlds = new World[repeat];
 			for (int i = 0; i < worlds.Length; i++)
 			{
@@ -142,6 +103,8 @@ namespace Revenj.Bench
 			return ReturnJSON(worlds);
 		}
 
+		//it doesn't make sense to allow bulk update, but disallow bulk read
+		//but since owners don't allow that, let's loop again
 		public Stream Updates(string count)
 		{
 			int repeat;
@@ -150,8 +113,6 @@ namespace Revenj.Bench
 			else if (repeat > 500) repeat = 500;
 			var com = ThreadLocal.Command;
 			var rnd = ThreadLocal.Random;
-			//let's not use the correct way to solve such problems, but instead "punish" the driver
-			//var worlds = com.ExecuteMany(repeat, rnd);
 			var worlds = new World[repeat];
 			for (int i = 0; i < worlds.Length; i++)
 			{
