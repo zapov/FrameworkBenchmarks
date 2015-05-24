@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0"?>
 <configuration>
   <configSections>
     <section name="autofacConfiguration" type="Revenj.Extensibility.Autofac.Configuration.SectionHandler, Revenj.Extensibility" />
@@ -20,6 +20,7 @@
   <autofacConfiguration>
     <modules>
       <module type="Revenj.Wcf.StandardModule, Revenj.Wcf" />
+      <module type="Revenj.Bench.ContainerConfiguration, Revenj.Bench" />
     </modules>
     <components>
       <component type="Revenj.Http.NoAuth, Revenj.Http" service="Revenj.Security.IPermissionManager, Revenj.Security.Interface" />
