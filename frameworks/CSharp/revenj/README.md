@@ -4,17 +4,17 @@
 
 ### JSON Response
 
-* `http://localhost:8080/Bench.svc/json`
+* `http://localhost:8080/bench/json`
 
 ### Plain Text Response
 
-* `http://localhost:8080/Bench.svc/plaintext`
+* `http://localhost:8080/bench/plaintext`
 
 ### Database Responses
 
-* `http://localhost:8080/Bench.svc/db`
-* `http://localhost:8080/Bench.svc/queries/10`
-* `http://localhost:8080/Bench.svc/updates?queries=20`
+* `http://localhost:8080/bench/db`
+* `http://localhost:8080/bench/queries/10`
+* `http://localhost:8080/bench/updates?queries=20`
 
 ## Versions
 

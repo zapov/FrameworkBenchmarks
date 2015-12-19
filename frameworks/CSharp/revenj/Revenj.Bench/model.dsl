@@ -1,9 +1,9 @@
 ﻿module FrameworkBench {
-	value Message {
-		string message;
+	struct Message {
+		String message;
 	}
-	value World {
+	sql World world(id) {
 		int id;
-		int randomNumber;
+		int randomNumber randomnumber;
 	}
 }
