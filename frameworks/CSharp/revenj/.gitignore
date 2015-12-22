@@ -1,0 +1,8 @@
+*.user
+*.suo
+*.jar
+*.zip
+*/bin/*
+*/obj/*
+exe/
+tmp/
