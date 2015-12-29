@@ -12,7 +12,7 @@ public class PlaintextServlet extends HttpServlet {
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-		res.setContentType("text/plain");
+		res.setContentType("text/plain; charset=utf-8");
 		res.getOutputStream().write(HELLO_WORLD);
 	}
 }

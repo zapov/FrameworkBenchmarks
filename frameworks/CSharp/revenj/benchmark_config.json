@@ -1,7 +1,7 @@
 {
   "framework": "Revenj.NET",
   "tests": [{
-    "default": {
+    "windows": {
       "setup_file": "setup",
       "json_url": "/bench/json",
       "db_url": "/bench/db",
@@ -23,7 +23,7 @@
       "notes": "",
       "versus": ""
     },
-    "xsp": {
+    "default": {
       "setup_file": "setup",
       "json_url": "/bench/json",
       "db_url": "/bench/db",

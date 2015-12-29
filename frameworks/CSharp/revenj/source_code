@@ -1,6 +1,4 @@
-./Revenj.Bench/Context.cs
-./Revenj.Bench/RestService.cs
-./Revenj.Bench/model.dsl
-./Revenj.Bench/Revenj.Bench.csproj
-./Revenj.Bench.sln
-./Revenj.Http.exe.config
+./revenj/Revenj.Bench/Context.cs
+./revenj/Revenj.Bench/RestService.cs
+./revenj/Revenj.Bench/model.dsl
+./revenj/Revenj.Http.exe.config

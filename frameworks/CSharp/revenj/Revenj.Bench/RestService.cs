@@ -74,7 +74,7 @@ namespace Revenj.Bench
 
 		public Stream PlainText()
 		{
-			ThreadContext.Response.ContentType = "text/plain";
+			ThreadContext.Response.ContentType = "text/plain; charset=utf-8";
 			return HelloWorld;
 		}
 

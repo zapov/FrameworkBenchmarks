@@ -2,6 +2,8 @@
 
 fw_depends java8 resin maven mono
 
+source $IROOT/java8.installed
+
 echo "Cleaning up..."
 rm -rf $TROOT/tmp $TROOT/model $TROOT/revenj.java $TROOT/dsl-clc.jar
 
@@ -34,4 +36,4 @@ cat $TROOT/web.xml | sed 's/localhost/'$DBHOST'/g' > $TROOT/src/main/webapp/WEB-
 mvn clean compile war:war
 rm -rf $RESIN_HOME/webapps/*
 cp target/revenj.war $RESIN_HOME/webapps/
-resinctl start
+JAVA_EXE=$JAVA_HOME/bin/java resinctl start
