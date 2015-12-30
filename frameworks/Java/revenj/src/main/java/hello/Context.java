@@ -5,14 +5,12 @@ import dsl.Boot;
 import dsl.FrameworkBench.World;
 import dsl.FrameworkBench.repositories.WorldRepository;
 import org.revenj.extensibility.Container;
-import org.revenj.patterns.RepositoryBulkReader;
-import org.revenj.patterns.ServiceLocator;
+import org.revenj.patterns.*;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
+import java.sql.*;
 import java.util.*;
-import java.util.concurrent.Callable;
+import java.util.concurrent.*;
 
 class Context {
 	private static final ServiceLocator locator;
@@ -33,7 +31,7 @@ class Context {
 	public final JsonWriter json;
 	public final WorldRepository repository;
 	public final Connection connection;
-	private final Random random;
+	private final ThreadLocalRandom random;
 	public final RepositoryBulkReader bulkReader;
 	public final World[] worlds = new World[512];
 	public final Callable[] callables = new Callable[512];
@@ -45,7 +43,7 @@ class Context {
 			connection.setAutoCommit(true);
 			ctx.registerInstance(connection);
 			this.json = new JsonWriter();
-			this.random = new Random();
+			this.random = ThreadLocalRandom.current();
 			this.repository = ctx.resolve(WorldRepository.class);
 			this.bulkReader = ctx.resolve(RepositoryBulkReader.class);
 		} catch (Exception e) {

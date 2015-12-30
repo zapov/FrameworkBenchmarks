@@ -2,18 +2,27 @@
 
 fw_depends java8 resin maven mono
 
+source $IROOT/java8.installed
+
 echo "Cleaning up..."
-rm -rf $TROOT/tmp $TROOT/model $TROOT/revenj.java $TROOT/dsl-clc.jar
+rm -rf $TROOT/tmp $TROOT/model $TROOT/revenj.java $TROOT/dsl-clc.jar $TROOT/dsl-compiler.zip $TROOT/dsl-compiler.exe
 
 echo "Download DSL compiler client"
 wget -O $TROOT/dsl-clc.jar https://github.com/ngs-doo/dsl-compiler-client/releases/download/1.5.0/dsl-clc.jar
 
-echo "Compiling the server model, and downloading dependencies..."
+echo "Download compatible DSL compiler"
+wget -O $TROOT/dsl-compiler.zip https://github.com/ngs-doo/revenj/releases/download/1.2.1/dsl-compiler.zip
+
+echo "Unzipping DSL compiler"
+unzip $TROOT/dsl-compiler.zip -d $TROOT
+
+echo "Compiling the server model and downloading dependencies..."
 java -jar $TROOT/dsl-clc.jar \
 	temp=$TROOT/tmp/ \
 	force \
 	dsl=$TROOT/src \
 	manual-json \
+	compiler=$TROOT/dsl-compiler.exe \
 	namespace=dsl \
 	revenj.java=$TROOT/model/gen-model.jar \
 	no-prompt \
@@ -34,4 +43,4 @@ cat $TROOT/web.xml | sed 's/localhost/'$DBHOST'/g' > $TROOT/src/main/webapp/WEB-
 mvn clean compile war:war
 rm -rf $RESIN_HOME/webapps/*
 cp target/revenj.war $RESIN_HOME/webapps/
-resinctl start
+JAVA_EXE=$JAVA_HOME/bin/java resinctl start
