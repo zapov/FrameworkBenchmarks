@@ -6,9 +6,11 @@ import dsl.FrameworkBench.World;
 import javax.servlet.ServletException;
 import javax.servlet.http.*;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.*;
 
 public class UpdatesServlet extends HttpServlet {
+
+	private static final Comparator<World> ASC = (o1, o2) -> o1.getId() - o2.getId();
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
@@ -22,6 +24,7 @@ public class UpdatesServlet extends HttpServlet {
 		for (int i = 0; i < count; i++) {
 			changed.add(worlds[i].setRandomNumber(ctx.getRandom10k()));
 		}
+		Collections.sort(worlds, ASC);
 		ctx.repository.update(changed);
 		json.serialize(worlds, count);
 		json.toStream(res.getOutputStream());
