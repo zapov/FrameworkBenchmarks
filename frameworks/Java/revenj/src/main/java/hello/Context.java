@@ -1,7 +1,6 @@
 package hello;
 
 import com.dslplatform.json.JsonWriter;
-import dsl.Boot;
 import dsl.FrameworkBench.*;
 import dsl.FrameworkBench.repositories.*;
 import org.revenj.extensibility.Container;
@@ -12,21 +11,7 @@ import java.sql.*;
 import java.util.*;
 import java.util.concurrent.*;
 
-class Context {
-	private static final ServiceLocator locator;
-	private static final String jdbcUrl;
-
-	static {
-		try {
-			javax.naming.Context ctx = new javax.naming.InitialContext();
-			jdbcUrl = (String) ctx.lookup("java:comp/env/revenj.jdbcUrl");
-			Properties props = new Properties();
-			props.setProperty("revenj.notifications.status", "disabled");
-			locator = Boot.configure(jdbcUrl, props);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
+final class Context {
 
 	public final JsonWriter json;
 	public final WorldRepository worlds;
@@ -37,17 +22,17 @@ class Context {
 	private final World[] buffer = new World[512];
 	private final Callable[] callables = new Callable[512];
 
-	public Context() {
+	public Context(Container container, String jdbcUrl) {
 		try {
-			Container ctx = locator.resolve(Container.class);
+			Container scope = container.createScope();
 			this.connection = DriverManager.getConnection(jdbcUrl);
 			connection.setAutoCommit(true);
-			ctx.registerInstance(connection);
+			scope.registerInstance(connection);
 			this.json = new JsonWriter();
 			this.random = ThreadLocalRandom.current();
-			this.worlds = ctx.resolve(WorldRepository.class);
-			this.fortunes = ctx.resolve(FortuneRepository.class);
-			this.bulkReader = ctx.resolve(RepositoryBulkReader.class);
+			this.worlds = scope.resolve(WorldRepository.class);
+			this.fortunes = scope.resolve(FortuneRepository.class);
+			this.bulkReader = scope.resolve(RepositoryBulkReader.class);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

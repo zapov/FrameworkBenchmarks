@@ -16,13 +16,13 @@
       "framework": "Revenj.JVM",
       "language": "Java",
       "orm": "Full",
-      "platform": "Servlet",
-      "webserver": "Resin",
+      "platform": "Undertow",
+      "webserver": "Undertow",
       "os": "Linux",
       "database_os": "Linux",
       "display_name": "Revenj.JVM",
       "notes": "",
-      "versus": "servlet"
+      "versus": "undertow"
     }
   }]
 }
